@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ko-Hsuan Chen</title>
+    <style>
+        /* --- 基礎設定 --- */
+        :root {
+            --sidebar-bg: #E8F3EB;       
+            --main-bg: #ffffff;          
+            --body-bg: #f7f9f8; 
+            --primary-color: #557c64;    
+            --active-color: #2f4f3a;     
+            --text-color: #333333;       
+            --light-text: #666666;       
+            --border-color: #dceedd;     
+            --card-hover-shadow: 0 10px 20px rgba(85, 124, 100, 0.15);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            color: var(--text-color);
+            line-height: 1.6;
+            background-color: var(--body-bg);
+            min-height: 100vh;
+            display: flex; 
+            justify-content: center;
+        }
+
+        a { text-decoration: none; color: inherit; transition: all 0.3s ease; }
+        ul { list-style: none; }
+
+        /* --- 版面置中容器 --- */
+        .page-container {
+            display: flex;
+            width: 100%;
+            max-width: 1280px;
+            background-color: var(--main-bg);
+            box-shadow: 0 0 20px rgba(0,0,0,0.05);
+            min-height: 100vh;
+        }
+
+        /* --- 左側欄 --- */
+        aside {
+            width: 300px;
+            flex-shrink: 0;
+            background-color: var(--sidebar-bg);
+            padding: 40px 30px;
+            position: sticky; 
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            z-index: 100;
+        }
+
+        .profile-header { text-align: left; margin-bottom: 40px; }
+        .profile-header h1 { font-size: 24px; color: var(--primary-color); margin-bottom: 8px; font-weight: 700; line-height: 1.3; }
+        .profile-header p { font-size: 14px; color: var(--light-text); font-weight: 500; }
+
+        nav ul li { margin-bottom: 12px; }
+        nav ul li a { font-size: 16px; color: var(--light-text); font-weight: 500; display: block; padding: 8px 0; transform-origin: left center; }
+        nav ul li a:hover { color: var(--primary-color); padding-left: 5px; }
+        nav ul li a.active { color: var(--active-color); font-size: 18px; font-weight: 700; border-left: 3px solid var(--active-color); padding-left: 15px; }
+
+        .contact-list { margin-top: auto; display: flex; flex-direction: column; gap: 12px; }
+        .contact-item { display: flex; align-items: center; font-size: 13px; color: var(--light-text); transition: color 0.2s; }
+        .contact-item:hover { color: var(--primary-color); }
+        .contact-item svg { width: 16px; height: 16px; margin-right: 10px; fill: currentColor; flex-shrink: 0; }
+
+        /* --- 右側內容 --- */
+        main {
+            flex-grow: 1;
+            padding: 60px 80px 0 80px;
+            display: flex;
+            flex-direction: column;
+            width: 0; 
+        }
+
+        section { min-height: 20vh; margin-bottom: 60px; padding-top: 20px; scroll-margin-top: 40px; }
+
+        h2.section-title {
+            font-size: 20px;
+            color: var(--primary-color);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid var(--sidebar-bg);
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+
+        /* --- About Me Block --- */
+        .about-content-wrapper { display: flex; gap: 40px; align-items: flex-start; margin-bottom: 30px; }
+        .about-text-column { flex: 1; }
+        .about-photo-wrapper { flex: 0 0 200px; }
+        .about-photo { width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); object-fit: cover; aspect-ratio: 1/1; }
+        .content-text { font-size: 15px; color: #444; text-align: justify; margin-bottom: 15px; }
+
+        /* Skills Styles */
+        .skills-section { margin-top: 20px; padding-top: 20px; border-top: 1px dashed var(--border-color); }
+        .skill-category { margin-bottom: 25px; }
+        .skill-category h3 { font-size: 16px; color: #333; margin-bottom: 12px; font-weight: 700; display: flex; align-items: center; }
+        .skill-category h3::before { content: ''; display: inline-block; width: 6px; height: 6px; background-color: var(--primary-color); border-radius: 50%; margin-right: 8px; }
+        
+        .skill-sub-row { margin-bottom: 8px; font-size: 14px; }
+        .skill-label { font-weight: 600; color: #555; margin-right: 5px; display: inline-block; min-width: 150px; } 
+        .skills-grid { display: inline-flex; flex-wrap: wrap; gap: 6px; vertical-align: top; }
+        .skill-tag { background-color: var(--sidebar-bg); padding: 4px 10px; border-radius: 4px; font-size: 13px; color: var(--primary-color); font-weight: 600; }
+
+        /* Education Styles */
+        .education-block { margin-top: 30px; }
+        .edu-item { margin-bottom: 15px; border-bottom: 1px solid #f0f0f0; padding-bottom: 10px; }
+        .edu-item:last-child { border-bottom: none; }
+        .edu-header { display: flex; justify-content: space-between; align-items: baseline; }
+        .edu-degree { font-weight: 700; font-size: 16px; color: var(--primary-color); }
+        .edu-year { font-size: 14px; color: #333; font-weight: bold; font-style: normal; }
+        .edu-sub { display: flex; justify-content: space-between; margin-top: 2px; }
+        .edu-school { font-size: 15px; color: #555; }
+        .edu-gpa { font-size: 14px; color: var(--light-text); font-style: italic; }
+
+        /* Download Button */
+        .btn-download { display: inline-flex; align-items: center; background-color: var(--primary-color); color: #fff !important; padding: 10px 20px; border-radius: 6px; font-weight: 600; font-size: 14px; margin-top: 25px; transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .btn-download:hover { background-color: var(--active-color); transform: translateY(-2px); box-shadow: 0 6px 10px rgba(0,0,0,0.15); }
+        .btn-download svg { width: 18px; height: 18px; margin-right: 8px; fill: currentColor; }
+
+        /* Research & Projects */
+        .job-block { margin-bottom: 40px; }
+        .job-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 5px; }
+        .job-title { font-size: 18px; font-weight: 700; color: #333; }
+        .job-date { font-size: 14px; color: var(--light-text); font-weight: bold; font-style: normal; white-space: nowrap; margin-left: 10px; }
+        .job-location { font-size: 15px; color: var(--primary-color); font-weight: 500; margin-bottom: 5px; }
+        .job-advisor { font-size: 14px; color: #666; font-style: italic; margin-bottom: 15px; }
+        .project-block { margin-left: 10px; padding-left: 15px; border-left: 2px solid var(--border-color); margin-bottom: 20px; }
+        .project-title { font-size: 15px; font-weight: 700; color: #444; margin-bottom: 6px; }
+        .bullet-list { list-style: disc; margin-left: 20px; }
+        .bullet-list li { margin-bottom: 6px; font-size: 15px; text-align: justify; color: #444; }
+
+        /* Projects Card (Modified for Full Image Display) */
+        .project-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
+        .project-card { background: #fff; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; transition: transform 0.3s ease, box-shadow 0.3s ease; display: flex; flex-direction: column; }
+        .project-card:hover { transform: translateY(-5px); box-shadow: var(--card-hover-shadow); border-color: var(--primary-color); }
+        
+        /* [修改] 圖片容器高度增加，並使用 contain 完整顯示 */
+        .img-link { display: block; width: 100%; height: 200px; overflow: hidden; background-color: #fff; border-bottom: 1px solid var(--border-color); }
+        .project-img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: contain; /* 關鍵：完整顯示圖片 */
+            object-position: center;
+            transition: transform 0.5s ease; 
+        }
+        .img-link:hover .project-img { transform: scale(1.02); } /* 稍微縮小放大效果以免切邊 */
+        
+        .card-content { padding: 20px; display: flex; flex-direction: column; flex-grow: 1; }
+        .project-card h3 { font-size: 17px; margin-bottom: 10px; font-weight: 700; line-height: 1.4; }
+        .title-link { color: var(--text-color); text-decoration: none; transition: color 0.3s; }
+        .title-link:hover { color: var(--primary-color); }
+        .project-card p { font-size: 14px; color: #555; margin-bottom: 20px; line-height: 1.6; text-align: justify; }
+        .card-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; }
+        .tag { font-size: 12px; padding: 4px 10px; background-color: var(--sidebar-bg); color: var(--primary-color); border-radius: 15px; font-weight: 600; }
+
+        /* Teaching */
+        .teaching-item { margin-bottom: 25px; }
+        .teaching-header { display: flex; justify-content: space-between; margin-bottom: 5px; }
+        .teaching-title { font-weight: 700; font-size: 16px; color: #333; }
+        .teaching-date { font-size: 14px; color: var(--light-text); font-weight: bold; font-style: normal; }
+
+        /* Awards Styles */
+        .award-list { list-style: none; padding: 0; }
+        .award-item { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; border-bottom: 1px solid #f9f9f9; padding-bottom: 8px; }
+        .award-title { font-size: 15px; font-weight: 600; color: #444; padding-right: 20px; }
+        .award-date { font-size: 14px; color: var(--light-text); white-space: nowrap; font-weight: bold; font-style: normal; }
+
+        /* Publications */
+        .pub-category { margin-bottom: 30px; }
+        .pub-category h3 { font-size: 16px; color: var(--primary-color); border-bottom: 1px solid #eee; padding-bottom: 5px; margin-bottom: 15px; }
+        .pub-list { list-style-type: decimal; padding-left: 20px; margin-left: 10px; }
+        .pub-list li { margin-bottom: 12px; font-size: 15px; text-align: justify; color: #444; padding-left: 5px; }
+
+        /* Footer */
+        footer { margin-top: auto; padding: 30px 0; border-top: 1px solid var(--border-color); text-align: center; font-size: 13px; color: var(--light-text); }
+        footer p { margin-bottom: 5px; }
+
+        /* RWD */
+        @media (max-width: 900px) {
+            .page-container { flex-direction: column; max-width: 100%; }
+            aside { width: 100%; height: auto; position: relative; padding: 30px; border-right: none; border-bottom: 1px solid var(--border-color); }
+            main { padding: 40px 25px; width: 100%; }
+            nav ul { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; }
+            nav ul li a.active { border-left: none; padding-left: 0; border-bottom: 2px solid var(--active-color); }
+            .about-content-wrapper { flex-direction: column-reverse; align-items: center; }
+            .about-photo-wrapper { margin-bottom: 20px; width: 160px; }
+            .contact-list { display: flex; flex-wrap: wrap; justify-content: center; margin-top: 20px; gap: 20px;}
+            .skill-label { display: block; margin-bottom: 5px; }
+            .skills-grid { display: flex; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="page-container">
+        <aside>
+            <div>
+                <div class="profile-header">
+                    <h1>Ko-Hsuan<br>(Mandy) Chen</h1>
+                    <p>Postdoctoral Researcher |<br>Experimental Condensed Matter Physics</p>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="#about" class="nav-link">About Me</a></li>
+                        <li><a href="#research-experience" class="nav-link">Research Experience</a></li>
+                        <li><a href="#projects" class="nav-link">Projects</a></li>
+                        <li><a href="#publications" class="nav-link">Publications</a></li>
+                        <li><a href="#teaching-experience" class="nav-link">Teaching Experience</a></li>
+                        <li><a href="#awards" class="nav-link">Awards</a></li>
+                    </ul>
+                </nav>
+            </div>
+            
+            <div class="contact-list">
+                <div class="contact-item">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                    <span>Hsinchu, Taiwan</span>
+                </div>
+                <a href="https://scholar.google.com/citations?user=K4tAANAAAAAJ&hl=zh-TW" target="_blank" class="contact-item">
+                    <svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/></svg>
+                    <span>Google Scholar</span>
+                </a>
+                <a href="https://orcid.org/0000-0002-4402-3541" target="_blank" class="contact-item">
+                    <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                    <span>ORCID</span>
+                </a>
+                <a href="https://www.linkedin.com/in/khmchen" target="_blank" class="contact-item">
+                    <svg viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
+                    <span>LinkedIn</span>
+                </a>
+                <a href="mailto:khmandychen@gmail.com" class="contact-item">
+                    <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                    <span>Email</span>
+                </a>
+                <a href="https://github.com/" target="_blank" class="contact-item">
+                    <svg viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.42-1.305.763-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+                    <span>GitHub</span>
+                </a>
+            </div>
+        </aside>
+
+        <main>
+            
+            <section id="about">
+                <h2 class="section-title">About Me</h2>
+                
+                <div class="about-content-wrapper">
+                    <div class="about-text-column">
+                        <p class="content-text">
+                            I am a highly motivated researcher in experimental condensed matter physics, specializing in materials physics and thin-film engineering. With extensive hands-on experience in Molecular Beam Epitaxy (MBE) and material characterization, I am dedicated to exploring novel properties in quantum materials and their applications in spintronics and next-generation computing. My expertise encompasses the growth of diverse thin-film systems, including 2D layered materials, topological quantum materials, magnetic materials, and semiconductors. I am committed to addressing critical scientific challenges through innovative problem-solving and effective interdisciplinary collaboration.
+                        </p>
+                        <p class="content-text">
+                            Beyond my core research, I am an enthusiastic adopter of emerging technologies. I actively leverage AI tools to optimize research workflows, ranging from coding for efficient scientific data analysis to creating my website.
+                        </p>
+                        <p class="content-text">
+                            Currently, I am seeking R&D roles where I can apply my materials expertise to advance fundamental science or solve bottleneck challenges in next-generation computing and memory devices.
+                        </p>
+                    </div>
+
+                    <div class="about-photo-wrapper">
+                        <img src="profile/profile.jpg"" alt="Profile Photo" class="about-photo">
+                    </div>
+                </div>
+
+                <div class="skills-section">
+                    
+                    <div class="skill-category">
+                        <h3>Experimental Skills</h3>
+                        
+                        <div class="skill-sub-row">
+                            <span class="skill-label">Thin Film Growth:</span>
+                            <div class="skills-grid">
+                                <span class="skill-tag">MBE</span>
+                                <span class="skill-tag">UHV Chamber Design & Maintenance</span>
+                            </div>
+                        </div>
+
+                        <div class="skill-sub-row">
+                            <span class="skill-label">Structural & Surface Analysis:</span>
+                            <div class="skills-grid">
+                                <span class="skill-tag">RHEED</span>
+                                <span class="skill-tag">LEED</span>
+                                <span class="skill-tag">AFM</span>
+                                <span class="skill-tag">STM</span>
+                                <span class="skill-tag">XPS</span>
+                            </div>
+                        </div>
+
+                        <div class="skill-sub-row">
+                            <span class="skill-label">Electronic & Magnetic Characterization:</span>
+                            <div class="skills-grid">
+                                <span class="skill-tag">ARPES</span>
+                                <span class="skill-tag">DC Transport</span>
+                                <span class="skill-tag">SQUID magnetometer</span>
+                                <span class="skill-tag">XMCD</span>
+                            </div>
+                        </div>
+
+                        <div class="skill-sub-row">
+                            <span class="skill-label">Device Fabrication:</span>
+                            <div class="skills-grid">
+                                <span class="skill-tag">Photolithography</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="skill-category">
+                        <h3>Software & Tools</h3>
+                        <div class="skills-grid">
+                            <span class="skill-tag">Origin</span>
+                            <span class="skill-tag">Python (Basic, Data Analysis)</span>
+                            <span class="skill-tag">SolidWorks (CAD/Instrument Design)</span>
+                        </div>
+                    </div>
+
+                    <div class="skill-category">
+                        <h3>Languages</h3>
+                        <div class="skills-grid">
+                            <span class="skill-tag">Mandarin (Native)</span>
+                            <span class="skill-tag">English (C1 / TOEFL iBT: 95)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="education-block">
+                    <div class="edu-item">
+                        <div class="edu-header">
+                            <span class="edu-degree">Ph.D. in Physics</span>
+                            <span class="edu-year">2016 – 2022</span>
+                        </div>
+                        <div class="edu-sub">
+                            <span class="edu-school">National Tsing Hua University, Taiwan</span>
+                            <span class="edu-gpa">GPA: 4.07/4.3</span>
+                        </div>
+                    </div>
+                    <div class="edu-item">
+                        <div class="edu-header">
+                            <span class="edu-degree">M.S. in Physics</span>
+                            <span class="edu-year">2014 - 2016</span>
+                        </div>
+                        <div class="edu-sub">
+                            <span class="edu-school">National Tsing Hua University, Taiwan</span>
+                            <span class="edu-gpa">GPA: 3.98/4.3</span>
+                        </div>
+                    </div>
+                    <div class="edu-item">
+                        <div class="edu-header">
+                            <span class="edu-degree">B.S. in Material Science and Engineering</span>
+                            <span class="edu-year">2010 - 2014</span>
+                        </div>
+                        <div class="edu-sub">
+                            <span class="edu-school">National Tsing Hua University, Taiwan</span>
+                            <span class="edu-gpa">GPA: 4.1/4.3</span>
+                        </div>
+                    </div>
+                </div>
+
+                <a href="CV_Kuan-Hung_Chen.pdf" target="_blank" class="btn-download" download>
+                    <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                    Download Complete CV
+                </a>
+
+            </section>
+
+            <section id="research-experience">
+                <h2 class="section-title">Research Experience</h2>
+                
+                <div class="job-block">
+                    <div class="job-header">
+                        <div class="job-title">Postdoctoral Researcher</div>
+                        <div class="job-date">2022 - present</div>
+                    </div>
+                    <div class="job-location">Department of Physics, National Tsing Hua University, Taiwan</div>
+                    <div class="job-advisor">Advisors: Dr. J. Raynien Kwo and Dr. Minghwei Hong</div>
+                    
+                    <div class="project-block">
+                        <div class="project-title">Project: Topological insulator (TI)-based magnetic heterostructures for novel topological phenomena and spintronic research</div>
+                        <ul class="bullet-list">
+                            <li>Led investigations in the thin film growth, low-temperature electrical transport, and magnetic properties of magnetic TI (Bi,Sb)<sub>2</sub>Te<sub>3</sub> trilayers in heterostructure with layered magnet and magnetic garnets, aiming for high-temperature quantum anomalous Hall insulators for dissipationless transport.</li>
+                            <li>Discovered and demonstrated an electrically sign-reversible topological Hall effect in magnetic TI.</li>
+                            <li>Designed and set up a UHV portable chamber for sample transfer between the MBE chamber and the sputtering chamber.</li>
+                            <li>Mentored graduate students in experimental technique and data analysis.</li>
+                        </ul>
+                    </div>
+
+                    <div class="project-block">
+                        <div class="project-title">Project: Study of superconducting materials for high-coherence circuits in quantum computing</div>
+                        <ul class="bullet-list">
+                            <li>Characterized the DC electrical transport properties of superconducting Ta thin films.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="job-block">
+                    <div class="job-header">
+                        <div class="job-title">Graduate Student</div>
+                        <div class="job-date">2014 - 2022</div>
+                    </div>
+                    <div class="job-location">Department of Physics, National Tsing Hua University, Taiwan</div>
+                    <div class="job-advisor">Advisors: Dr. J. Raynien Kwo and Dr. Minghwei Hong</div>
+                    
+                    <div class="project-block">
+                        <div class="project-title">Ph.D. Thesis: Alpha phase Sn Thin Films: Molecular Beam Epitaxial Growth, Topological Band Structure, and Electrical Transport</div>
+                        <ul class="bullet-list">
+                            <li>Investigated the MBE growth and the evolution of electronic band structure of α-Sn on InSb(001), (111)A, (111)B epilayers, and CdTe/InSb(001) from monolayer to 120 nm thick films using both in-house and synchrotron-based ARPES.</li>
+                            <li>Discovered Rashba-like surface states in the Dirac semimetal α-Sn, which provided insights into topological phase transition in collaboration with theoretical physicist colleagues.</li>
+                            <li>Designed and set up a UHV portable chamber for sample transfer between the MBE system and the synchrotron beamline (TLS BL21B1) at National Synchrotron Radiation Research Center.</li>
+                        </ul>
+                    </div>
+
+                    <div class="project-block">
+                        <div class="project-title">M.S. Thesis: Growth of Topological Insulator Thin Films on 2D Materials of Graphene and MoS<sub>2</sub></div>
+                        <ul class="bullet-list">
+                            <li>Researched the importance of interfacial bonding in van der Waals epitaxy with MBE.</li>
+                            <li>Achieved better crystal quality and increased mobility by at least two times in layered TI Bi<sub>2</sub>Se<sub>3</sub> through substrate engineering.</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="project-block">
+                        <div class="project-title">Collaboration with other lab members:</div>
+                        <ul class="bullet-list">
+                            <li>Developed the topological insulator thin film growth on magnetic garnet for spin transport studies.</li>
+                            <li>Supplied high-quality thin film samples to collaborators, facilitating other research projects within the group.</li>
+                        </ul>
+                    </div>
+
+                </div>
+            </section>
+
+            <section id="projects">
+                <h2 class="section-title">Projects</h2>
+                <div class="project-grid">
+                    
+                    <div class="project-card">
+                        <a href="https://doi.org/10.1063/1.4989805" target="_blank" class="img-link">
+                            <img src="projects/project1_cover.jpg" alt="Van der Waals Epitaxy" class="project-img">
+                        </a>
+                        <div class="card-content">
+                            <h3>
+                                <a href="https://doi.org/10.1063/1.4989805" target="_blank" class="title-link">Van der Waals epitaxy of layered topological insulator Bi<sub>2</sub>Se<sub>3</sub></a>
+                            </h3>
+                            <p>This study reports the growth of high-quality topological insulator Bi<sub>2</sub>Se<sub>3</sub> thin films on single-layer MoS<sub>2</sub> via van der Waals epitaxy, achieving excellent crystallinity starting immediately from the first quintuple layer. In contrast to traditional 3D substrates, this method yields larger domain sizes and a 2&ndash;3 times enhancement in mobility, evidenced by the observation of Shubnikov&ndash;de Haas oscillations. Consequently, this approach of using a van der Waals type template presents a promising pathway for the growth of other low-dimensional layered materials.</p>
+                            <div class="card-tags">
+                                <span class="tag">MBE</span>
+                                <span class="tag">Electrical Transport</span>
+                                <span class="tag">Topological Insulator</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="project-card">
+                        <a href="https://doi.org/10.1103/PhysRevB.105.075109" target="_blank" class="img-link">
+                            <img src="https://via.placeholder.com/600x400/D0E0D4/557C64?text=Topological+Phase+Transition" alt="Alpha Sn Thin Films" class="project-img">
+                        </a>
+                        <div class="card-content">
+                            <h3>
+                                <a href="https://doi.org/10.1103/PhysRevB.105.075109" target="_blank" class="title-link">Topological phase transition and Rashba-like preformed topological surface states of &alpha;-Sn thin films</a>
+                            </h3>
+                            <p>This study investigates the electronic structure of compressively strained alpha-Sn(001) thin films, revealing a topological phase transition from a trivial to a nontrivial phase at a critical thickness of 6 bilayers. In films thicker than 30 bilayers, Rashba-like surface states were identified as preformed topological surface states that coexist with linearly dispersive topological surface states. Furthermore, measurements of thick 370-bilayer films confirm a Dirac semimetal phase, suggesting that the unique coexistence of these surface states offers a promising platform for spintronic applications.</p>
+                            <div class="card-tags">
+                                <span class="tag">MBE</span>
+                                <span class="tag">ARPES</span>
+                                <span class="tag">DFT</span>
+                                <span class="tag">Dirac semimetal</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <section id="publications">
+                <h2 class="section-title">Publications</h2>
+                
+                <div class="pub-category">
+                    <h3>Journal Articles</h3>
+                    <ol class="pub-list">
+                        <li><strong>K.-H. M. Chen</strong>, H.-N. Chen, P.-T. Chen, T.-R. Chang, S.-F. Lee, M. Hong, and J. Kwo, “Proximity-induced ferrimagnetic-like interfaces in topological insulator heterostructures Cr<sub>2</sub>Ge<sub>2</sub>Te<sub>6</sub>/(Bi,Sb)<sub>2</sub>Te<sub>3</sub>/Eu<sub>3</sub>Fe<sub>5</sub>O<sub>12</sub>”, submitted (2025).</li>
+                        <li>J.-F. Wong,* <strong>K. H. M. Chen,*</strong> J.-M. Chia, Z.-P. Huang, S.-X. Wang, P.-T. Chen, L. B. Young, Y.-H. G. Lin, S.-F. Lee, C.-Y. Mou, M. Hong, and J. Kwo, “Electrically Sign-Reversible Topological Hall Effect in a Top-Gated Topological Insulator (Bi,Sb)<sub>2</sub>Te<sub>3</sub> on a Europium Iron Garnet”, Phys. Rev. B 109, 024432 (2024). (selected as editor’s suggestion)</li>
+                        <li><strong>K. H. M. Chen,*</strong> K. Y. Lin,* S. W. Lien, S. W. Huang, C. K. Cheng, H. Y. Lin, C.-H. Hsu, T.-R. Chang, C.-M. Cheng, M. Hong, and J. Kwo, “Thickness-dependent topological phase transition and Rashba-like preformed topological surface states of α-Sn(001) thin films on InSb(001)”, Phys. Rev. B 105, 075109 (2022).</li>
+                        <li>L. U. Liang, Y. H. Yen, C. W. Chou, <strong>K. H. M. Chen</strong>, H. Y. Lin, S. W. Huang, M. Hong, J. Kwo, and Germar Hoffmann, “Protected long-time storage of a topological insulator”, AIP Advances 11, 025245 (2021).</li>
+                        <li>C. C. Chen, <strong>K. H. M. Chen</strong>, Y. T. Fanchiang, C. C. Tseng, S. R. Yang, C. N. Wu, M. X. Guo, C. K. Cheng, S. W. Huang, K. Y. Lin, C. T. Wu, M. Hong, and J. Kwo, “Topological insulator Bi<sub>2</sub>Se<sub>3</sub> films on rare earth iron garnets and their high-quality interfaces”, Appl. Phys. Lett. 114, 031601 (2019).</li>
+                        <li>K. Y. Lin, H. W. Wan, <strong>K. H. M. Chen</strong>, Y. T. Fanchiang, W. S. Chen, Y. H. Lin, Y. T. Cheng, C. C. Chen, H. Y. Lin, L. B. Young, C. P. Cheng, T. W. Pi, J. Kwo, and M. Hong, “Molecular beam epitaxy, atomic layer deposition, and multiple functions connected via ultra-high vacuum”, J. Cryst. Growth 512, 223 (2019).</li>
+                        <li>H. Y. Lin, C. K. Cheng, <strong>K. H. M. Chen</strong>, C. C. Tseng, S. W. Huang, M. T. Chang, S. C. Tseng, M. Hong, and J. Kwo, “A new stable, crystalline capping material for topological insulators”, APL Materials 6, 066108 (2018).</li>
+                        <li>Y. T. Fanchiang, <strong>K. H. M. Chen</strong>, C. C. Tseng, C. C. Chen, C. K. Cheng, S. R. Yang, C. N. Wu, S. F. Lee, M. Hong and J. Kwo, “Strongly exchange-coupled and surface-state-modulated magnetization dynamics in Bi<sub>2</sub>Se<sub>3</sub>/yttrium iron garnet heterostructures”, Nat. Commun. 9, 223 (2018).</li>
+                        <li><strong>K. H. M. Chen</strong>, H. Y. Lin, S. R. Yang, C. K. Cheng, X. Q. Zhang, C. M. Cheng, S. F. Lee, C. H. Hsu, Y. H. Lee, M. Hong and J. Kwo, “Van der Waals epitaxy of topological insulator Bi<sub>2</sub>Se<sub>3</sub> on single layer transition metal dichalcogenide MoS<sub>2</sub>”, Appl. Phys. Lett. 111, 083106 (2017).</li>
+                        <li>C. Y. Wang, H. Y. Lin, S. R. Yang, <strong>K. H. M. Chen</strong>, Y. H. Lin, K. H. Chen, L. B. Young, C. K. Cheng, Y. T. Fanchiang, S. C. Tseng, M. Hong and J. Kwo, “Demonstration of large field effect in topological insulator films via a high-κ back gate”, Appl. Phys. Lett. 108, 202403 (2016).</li>
+                    </ol>
+                </div>
+
+                <div class="pub-category">
+                    <h3>Invited Talk/Seminar</h3>
+                    <ol class="pub-list">
+                        <li>“Heteroepitaxy of topological materials and their electrical transport properties“, National Chiayi University, Taiwan, September 26, 2024.</li>
+                    </ol>
+                </div>
+
+                <div class="pub-category">
+                    <h3>Conference Contribution</h3>
+                    <ol class="pub-list">
+                        <li>“Magnetic proximity-induced anomalous Hall effect in magnetic topological insulator trilayers Cr<sub>2</sub>Ge<sub>2</sub>Te<sub>6</sub>/(Bi,Sb)<sub>2</sub>Te<sub>3</sub>/Eu<sub>3</sub>Fe<sub>5</sub>O<sub>12</sub>”, APS Global Physics Summit 2025, Anaheim, California, USA, March 16-21, 2025. (oral presentation)</li>
+                        <li>“Van der Waals epitaxy of layered ferromagnet Cr<sub>2</sub>Ge<sub>2</sub>Te<sub>6</sub> and its heterostructure with topological insulator (Bi,Sb)<sub>2</sub>Te<sub>3</sub>”, APS March Meeting 2024, Minneapolis, Minnesota, USA, March 3-8, 2024. (oral presentation)</li>
+                        <li>“Manipulation of the topological Hall effect with electric field in top-gated (Bi,Sb)<sub>2</sub>Te<sub>3</sub> on EuIG”, 2023 APS March meeting, Las Vegas, NV, USA, March 5-10, 2023. (oral presentation)</li>
+                        <li>“Molecular beam epitaxy of van der Waals magnet Cr<sub>2</sub>Ge<sub>2</sub>Te<sub>6</sub> thin films in wafer-scale”, 2023 Annual Meeting of the Physical Society of Taiwan, Tainan, Taiwan, January 16-18, 2023. (Oral presentation)</li>
+                        <li>“Crystal growth and electronic band structures of α-Sn(001) and (111) thin films on InSb substrates”, 22nd International Conference on Molecular Beam Epitaxy, Sheffield, UK, September 4-9, 2022. (oral presentation)</li>
+                        <li>“Evolution of the band structure of α-Sn (001) thin film on InSb(001)”, Max Planck-POSTECH-Hsinchu Workshop on complex phase materials, Dresden, Germany, September 4-6, 2019. (oral presentation)</li>
+                        <li>“High quality topological material α-Sn thin film on InSb(001)”, 20th International Conference on Molecular Beam Epitaxy, Shanghai, China, September 2-7, 2018. (oral presentation)</li>
+                        <li>“High quality α-Sn thin film on InSb(001)”, 2018 Annual Meeting of the Physical Society of Taiwan, Taipei, Taiwan, Jan. 24-26, 2018. (poster presentation)</li>
+                        <li>“High quality topological insulator thin films grown by molecular beam epitaxy using MoS<sub>2</sub> monolayer as buffer layer”, 2016 APS March meeting, Baltimore, MD, USA, March 14-18, 2016. (oral presentation)</li>
+                        <li>”The effect of substrates on the material properties of topological insulator films”, 2015 Annual Meeting of the Physical Society of R. O. C., Hsinchu, Taiwan, Jan. 28-30, 2015. (poster presentation)</li>
+                    </ol>
+                </div>
+            </section>
+
+            <section id="teaching-experience">
+                <h2 class="section-title">Teaching Experience</h2>
+                
+                <div class="teaching-item">
+                    <div class="teaching-header">
+                        <div class="teaching-title">Special Topics of Nano Physics and Emergent Quantum Matters</div>
+                        <div class="teaching-date">2018 Fall</div>
+                    </div>
+                    <ul class="bullet-list">
+                        <li>Led recitation sessions for students, graded assignments, and proctored exams.</li>
+                        <li>Delivered two 150-minute guest lectures on "topological insulator thin film” and “2D layered quantum materials" for a class of ~15 graduate students.</li>
+                    </ul>
+                </div>
+
+                <div class="teaching-item">
+                    <div class="teaching-header">
+                        <div class="teaching-title">General Physics</div>
+                        <div class="teaching-date">2013 Fall, 2014 Spring</div>
+                    </div>
+                    <ul class="bullet-list">
+                        <li>Led recitation sessions for students, graded assignments, and proctored exams.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="awards">
+                <h2 class="section-title">Awards</h2>
+                <ul class="award-list">
+                    <li class="award-item">
+                        <span class="award-title">TSMC Ph.D. Scholarship</span>
+                        <span class="award-date">2016 - 2019</span>
+                    </li>
+                    <li class="award-item">
+                        <span class="award-title">Best Poster Award, NTHU-Physics Graduate Student Research Fair</span>
+                        <span class="award-date">2017, 2018, 2019</span>
+                    </li>
+                    <li class="award-item">
+                        <span class="award-title">Best Poster Award, Annual Meeting of the Physical Society of the Republic of China</span>
+                        <span class="award-date">2015</span>
+                    </li>
+                    <li class="award-item">
+                        <span class="award-title">Academic Excellence Award, National Tsing Hua University</span>
+                        <span class="award-date">2011, 2012</span>
+                    </li>
+                </ul>
+            </section>
+
+            <div style="height: 10vh;"></div>
+
+            <footer>
+                <p>&copy; 2025 Ko-Hsuan Chen. Hosted on GitHub Pages</p>
+                <p>Designed by Ko-Hsuan Chen (Assisted by AI)</p>
+            </footer>
+
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const sections = document.querySelectorAll("section");
+            const navLinks = document.querySelectorAll(".nav-link");
+            const observerOptions = { root: null, rootMargin: '-20% 0px -60% 0px', threshold: 0 };
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => link.classList.remove("active"));
+                        const id = entry.target.getAttribute("id");
+                        const activeLink = document.querySelector(`.nav-link[href="#${id}"]`);
+                        if (activeLink) activeLink.classList.add("active");
+                    }
+                });
+            }, observerOptions);
+            sections.forEach(section => observer.observe(section));
+        });
+    </script>
+</body>
+</html>
