@@ -141,21 +141,20 @@
         .bullet-list { list-style: disc; margin-left: 20px; }
         .bullet-list li { margin-bottom: 6px; font-size: 15px; text-align: justify; color: #444; }
 
-        /* Projects Card (Modified for Full Image Display) */
+        /* Projects Card */
         .project-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
         .project-card { background: #fff; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; transition: transform 0.3s ease, box-shadow 0.3s ease; display: flex; flex-direction: column; }
         .project-card:hover { transform: translateY(-5px); box-shadow: var(--card-hover-shadow); border-color: var(--primary-color); }
         
-        /* [修改] 圖片容器高度增加，並使用 contain 完整顯示 */
         .img-link { display: block; width: 100%; height: 200px; overflow: hidden; background-color: #fff; border-bottom: 1px solid var(--border-color); }
         .project-img { 
             width: 100%; 
             height: 100%; 
-            object-fit: contain; /* 關鍵：完整顯示圖片 */
+            object-fit: contain; 
             object-position: center;
             transition: transform 0.5s ease; 
         }
-        .img-link:hover .project-img { transform: scale(1.02); } /* 稍微縮小放大效果以免切邊 */
+        .img-link:hover .project-img { transform: scale(1.02); } 
         
         .card-content { padding: 20px; display: flex; flex-direction: column; flex-grow: 1; }
         .project-card h3 { font-size: 17px; margin-bottom: 10px; font-weight: 700; line-height: 1.4; }
@@ -165,23 +164,101 @@
         .card-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; }
         .tag { font-size: 12px; padding: 4px 10px; background-color: var(--sidebar-bg); color: var(--primary-color); border-radius: 15px; font-weight: 600; }
 
-        /* Teaching */
-        .teaching-item { margin-bottom: 25px; }
-        .teaching-header { display: flex; justify-content: space-between; margin-bottom: 5px; }
-        .teaching-title { font-weight: 700; font-size: 16px; color: #333; }
-        .teaching-date { font-size: 14px; color: var(--light-text); font-weight: bold; font-style: normal; }
-
-        /* Awards Styles */
-        .award-list { list-style: none; padding: 0; }
-        .award-item { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; border-bottom: 1px solid #f9f9f9; padding-bottom: 8px; }
-        .award-title { font-size: 15px; font-weight: 600; color: #444; padding-right: 20px; }
-        .award-date { font-size: 14px; color: var(--light-text); white-space: nowrap; font-weight: bold; font-style: normal; }
-
         /* Publications */
         .pub-category { margin-bottom: 30px; }
         .pub-category h3 { font-size: 16px; color: var(--primary-color); border-bottom: 1px solid #eee; padding-bottom: 5px; margin-bottom: 15px; }
         .pub-list { list-style-type: decimal; padding-left: 20px; margin-left: 10px; }
         .pub-list li { margin-bottom: 12px; font-size: 15px; text-align: justify; color: #444; padding-left: 5px; }
+
+        /* Study Notes Card Styles */
+        .study-notes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .note-card {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 25px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .note-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--card-hover-shadow);
+            border-color: var(--primary-color);
+        }
+
+        /* Intro Card (Collapsible) */
+        .note-card.intro-card {
+            grid-column: 1 / -1; 
+            cursor: pointer; /* 讓滑鼠變成手型 */
+        }
+
+        .intro-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .note-card.intro-card h3 {
+            font-size: 18px;
+            color: var(--primary-color);
+            margin: 0; /* 預設無邊距 */
+            flex-grow: 1;
+        }
+
+        .toggle-icon {
+            font-size: 24px;
+            color: var(--primary-color);
+            font-weight: 300;
+            line-height: 1;
+        }
+
+        /* 內容隱藏時的樣式 */
+        .intro-content {
+            display: none;
+            margin-top: 15px;
+            border-top: 1px dashed var(--border-color);
+            padding-top: 15px;
+            animation: fadeIn 0.4s ease;
+        }
+
+        /* 展開後的樣式 (透過 JS 添加 .expanded class) */
+        .note-card.intro-card.expanded .intro-content {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Link Card */
+        a.note-card.link-card {
+            text-decoration: none;
+            color: inherit;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background-color: #fafbfc;
+            min-height: 160px;
+        }
+
+        a.note-card.link-card h3 {
+            color: var(--primary-color);
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        a.note-card.link-card p {
+            font-size: 14px;
+            color: #666;
+        }
 
         /* Footer */
         footer { margin-top: auto; padding: 30px 0; border-top: 1px solid var(--border-color); text-align: center; font-size: 13px; color: var(--light-text); }
@@ -217,8 +294,7 @@
                         <li><a href="#research-experience" class="nav-link">Research Experience</a></li>
                         <li><a href="#projects" class="nav-link">Projects</a></li>
                         <li><a href="#publications" class="nav-link">Publications</a></li>
-                        <li><a href="#teaching-experience" class="nav-link">Teaching Experience</a></li>
-                        <li><a href="#awards" class="nav-link">Awards</a></li>
+                        <li><a href="#study-notes" class="nav-link">Study Notes</a></li>
                     </ul>
                 </nav>
             </div>
@@ -270,7 +346,7 @@
                     </div>
 
                     <div class="about-photo-wrapper">
-                        <img src="profile/profile.jpg"" alt="Profile Photo" class="about-photo">
+                        <img src="profile/profile.jpg" alt="Profile Photo" class="about-photo">
                     </div>
                 </div>
 
@@ -344,7 +420,7 @@
                         <h3>Languages</h3>
                         <div class="skills-grid">
                             <span class="skill-tag">Mandarin (Native)</span>
-                            <span class="skill-tag">English (C1 / TOEFL iBT: 95)</span>
+                            <span class="skill-tag">English (C1 / TOEFL iBT: 97)</span>
                         </div>
                     </div>
                 </div>
@@ -382,7 +458,7 @@
                     </div>
                 </div>
 
-                <a href="CV_Kuan-Hung_Chen.pdf" target="_blank" class="btn-download" download>
+                <a href="profile/CV_KHMChen_20251211_all.pdf" target="_blank" class="btn-download" download>
                     <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
                     Download Complete Academia CV
                 </a>
@@ -410,7 +486,6 @@
                         <div class="project-title">Project: Topological insulator (TI)-based magnetic heterostructures for novel topological phenomena and spintronic research</div>
                         <ul class="bullet-list">
                             <li>Led investigations in the thin film growth, low-temperature electrical transport, and magnetic properties of magnetic TI (Bi,Sb)<sub>2</sub>Te<sub>3</sub> trilayers in heterostructure with layered magnet and magnetic garnets, aiming for high-temperature quantum anomalous Hall insulators for dissipationless transport.</li>
-                            <li>Discovered and demonstrated an electrically sign-reversible topological Hall effect in magnetic TI.</li>
                             <li>Designed and set up a UHV portable chamber for sample transfer between the MBE chamber and the sputtering chamber.</li>
                             <li>Mentored graduate students in experimental technique and data analysis.</li>
                         </ul>
@@ -545,58 +620,47 @@
                 </div>
             </section>
 
-            <section id="teaching-experience">
-                <h2 class="section-title">Teaching Experience</h2>
+            <section id="study-notes">
+                <h2 class="section-title">Study Notes</h2>
                 
-                <div class="teaching-item">
-                    <div class="teaching-header">
-                        <div class="teaching-title">Special Topics of Nano Physics and Emergent Quantum Matters</div>
-                        <div class="teaching-date">2018 Fall</div>
+                <div class="study-notes-grid">
+                    
+                    <div class="note-card intro-card" onclick="toggleIntro(this)">
+                        <div class="intro-header">
+                            <h3>About these notes / 關於筆記</h3>
+                            <span class="toggle-icon">+</span>
+                        </div>
+                        <div class="intro-content">
+                            <p class="content-text">
+                                我喜歡學習新東西, 效法許多學術的部落格, 我想記錄下我的專業的學習筆記, 以便我日後回顧. 常常, 課堂裡的知識學習, 老師們常會說把我們從不懂教到懂, 似乎暗示著對一個知識的學習只有懂(1)與不懂(0)這兩種狀態, 然而隨著學習的知識越來越深, 似乎我沒辦法說我完全懂某個名詞, 概念或者知識片段, 但我又不是全然無知, 有點失去了自信. 直到我想起了一個概念, 其實, 懂與不懂一個知識, 它是一個光譜或灰階吧! 在全有與全無之間, 在1與0 之間, 可以有無數的切割. 我想重新開始, 對自己的所學的誠實. 目前的我只是其中一個狀態, 隨著時間過去, 可以不斷的變化, 而這裡可以是我記錄這個變化的實驗場.
+                            </p>
+                            <p class="content-text">
+                                目前的AI雖然可以創造出許多的內容, 甚至蒐集好資料寫好文章, 可是關於創造新知識, 還有蠻大的距離, 有待許多科學家努力. 我也會善用這些AI工具幫助我學習. 在這個交界的時代, 如果這些筆記也能幫助到其他學習者或是LLM資料, 那麼就是多出來的貢獻了.
+                            </p>
+                            <br>
+                            <p class="content-text">
+                                I enjoy learning new things. Inspired by many academic blogs, I want to document my learning notes for future reference. In the classroom, teachers often speak of guiding us from ignorance to understanding. This seems to imply a binary state of learning: you either get it (1) or you don't (0). However, as I dive deeper into my field, I find I cannot claim to fully comprehend a specific term, concept, or fragment of knowledge—yet I am not entirely ignorant either. I began to lose my confidence. Then, a concept struck me: understanding a topic is actually a spectrum, a grayscale. Between "all" and "nothing," between 1 and 0, there are infinite gradations. I want to be honest about my learning process. My current understanding is just one state among many. As time passes, this state will evolve, and these notes will serve as the testing ground to document that evolution.
+                            </p>
+                            <p class="content-text">
+                                While current AI can generate vast amounts of content—even aggregating data to write full articles—there remains a significant gap when it comes to creating new knowledge. This is a frontier where many scientists are still striving. I intend to leverage these AI tools to aid my own learning. In this transitional era, if these notes can help other learners—or even serve as training data for LLMs—that would be a bonus.
+                            </p>
+                        </div>
                     </div>
-                    <ul class="bullet-list">
-                        <li>Graded assignments and proctored exams.</li>
-                        <li>Delivered two 150-minute guest lectures on "topological insulator thin film” and “2D layered quantum materials" for a class of ~15 graduate students.</li>
-                    </ul>
-                </div>
 
-                <div class="teaching-item">
-                    <div class="teaching-header">
-                        <div class="teaching-title">General Physics</div>
-                        <div class="teaching-date">2013 Fall, 2014 Spring</div>
-                    </div>
-                    <ul class="bullet-list">
-                        <li>Led recitation sessions for students, graded assignments, and proctored exams.</li>
-                    </ul>
-                </div>
-            </section>
+                    <a href="https://app.heptabase.com/p/whiteboard/8b9f8a0a-e740-435a-b78b-a65411380788" target="_blank" class="note-card link-card">
+                        <div>
+                            <h3>Quantum Computing</h3>
+                            <p>View my notes on Heptabase ↗</p>
+                        </div>
+                    </a>
 
-            <section id="awards">
-                <h2 class="section-title">Awards</h2>
-                <ul class="award-list">
-                    <li class="award-item">
-                        <span class="award-title">TSMC Ph.D. Scholarship</span>
-                        <span class="award-date">2016 - 2019</span>
-                    </li>
-                    <li class="award-item">
-                        <span class="award-title">Best Poster Award, NTHU-Physics Graduate Student Research Fair</span>
-                        <span class="award-date">2017, 2018, 2019</span>
-                    </li>
-                    <li class="award-item">
-                        <span class="award-title">Best Poster Award, Annual Meeting of the Physical Society of the Republic of China</span>
-                        <span class="award-date">2015</span>
-                    </li>
-                    <li class="award-item">
-                        <span class="award-title">Academic Excellence Award, National Tsing Hua University</span>
-                        <span class="award-date">2011, 2012</span>
-                    </li>
-                </ul>
+                </div>
             </section>
 
             <div style="height: 10vh;"></div>
 
             <footer>
                 <p>&copy; 2025 Ko-Hsuan Chen. Hosted on GitHub Pages</p>
-                <p>Designed by Ko-Hsuan Chen</p>
             </footer>
 
         </main>
@@ -619,6 +683,17 @@
             }, observerOptions);
             sections.forEach(section => observer.observe(section));
         });
+
+        // [新增] 卡片展開/收合 JS
+        function toggleIntro(card) {
+            card.classList.toggle('expanded');
+            const icon = card.querySelector('.toggle-icon');
+            if (card.classList.contains('expanded')) {
+                icon.textContent = "−";
+            } else {
+                icon.textContent = "+";
+            }
+        }
     </script>
 </body>
 </html>
